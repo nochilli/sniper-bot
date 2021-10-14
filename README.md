@@ -11,7 +11,7 @@ Node.js 16.6.0 or newer is required.
 1. Run:
 
 ```bash
-$ git clone https://github.com/nochilli/sniper-bot
+$ git clone https://github.com/nochilli/sniper-bot.git
 $ cd ./sniper-bot
 ```
 

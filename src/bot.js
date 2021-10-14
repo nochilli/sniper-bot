@@ -80,6 +80,9 @@ client.on("message", (message) => {
 								},
 								{"name": "Reaction Snipe",
 								"value": "<:reply:894213507451617290>Displays the most recent removed reaction's emoji```pls rsnipe / pls reactsnipe```"
+								},
+								{"name": "Timestamp",
+								"value": "<:reply:894213507451617290>Gives a timestamp for the inputted time```pls tstamp / pls timestamp```"
 								}
 							)
 							.setColor('#8aca85')
@@ -183,16 +186,40 @@ client.on("message", (message) => {
 			: "There's nothing to snipe!");
 	}
 
-	if(message.content.toLowerCase().startsWith("pls timestamp")) {
-		cmd = message.content
-		seconds = cmd[(cmd.indexOf("s",12)-1)] === undefined ? 0 : parseInt(cmd[(cmd.indexOf("s",12)-1)])
-		minutes = cmd[(cmd.indexOf("m",12)-1)] === undefined ? 0 : parseInt(cmd[(cmd.indexOf("m",12)-1)])
-		hours = cmd[(cmd.indexOf("h",12)-1)] === undefined ? 0 : parseInt(cmd[(cmd.indexOf("h",12)-1)])
-		days = cmd[(cmd.indexOf("d",12)-1)] === undefined ? 0 : parseInt(cmd[(cmd.indexOf("d",12)-1)])
+	if(message.content.toLowerCase().startsWith("pls timestamp") | message.content.toLowerCase().startsWith("pls tstamp")) {
+		
+		var cmd = message.content.toLowerCase()
+		
+		var args = cmd.substr(14).split(" ")
+		const values={hours:0,minutes:0,days:0}
 
-		date=timestamp(seconds,minutes,hours,days)
+		for (let i = 0; i < args.length; i++) {
+			value=args[i]
+			if(value.endsWith("d")){
+				values.days = parseInt(value.slice(0,-1))
+			}
+			else if(value.endsWith("m")){
+				values.minutes = parseInt(value.slice(0,-1))
+			}
+			else if(value.endsWith("h")){
+				values.hours = parseInt(value.slice(0,-1))
+			}
+		  }
+
+		date=timestamp(values.minutes,values.hours,values.days)
 		tstamp=("<t:"+String(date)+">")
-		message.reply(tstamp+" (`"+tstamp+"`)")
+		message.channel.send(cmd === "pls timestamp" | cmd === "pls tstamp"
+				? {
+						embeds: [
+							new MessageEmbed()
+								.setDescription("**Timestamp:**\n<:reply:894213507451617290>Create a timestamp that automatically converts to the user's timezone.\n**Example:**\n```pls tstamp 2d 1h 30m``` ")
+								.setAuthor(message.author.tag,message.author.avatarURL())
+								.setTimestamp(message.createdAt)
+								.setColor('#8aca85'),
+						],
+				  }
+				: tstamp+" (`"+tstamp+"`)");
+		
 
  }
 
@@ -222,7 +249,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 	};
 });
 
-function timestamp(seconds,minutes,hours,days){
+function timestamp(minutes,hours,days){
 	var d = new Date()
 	var year = d.getUTCFullYear()
 	var month = d.getUTCMonth()
@@ -230,8 +257,9 @@ function timestamp(seconds,minutes,hours,days){
 	var hour = d.getUTCHours()
 	var minute = d.getUTCMinutes()
 	var second = d.getUTCSeconds()
-	var datum = new Date(Date.UTC(year, month, day + days, hour + hours, minute + minutes, second + seconds))
+	var datum = new Date(Date.UTC(year, month, day + days, hour + hours, minute + minutes, second))
 	return datum.getTime()/1000
 	}
+
 
 client.login(token);

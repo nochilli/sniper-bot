@@ -190,11 +190,11 @@ client.on("message", (message) => {
 		
 		var cmd = message.content.toLowerCase()
 		
-		var args = cmd.substr(14).split(" ")
+		var args = message.content.toLowerCase().startsWith("pls timestamp") ? cmd.substr(14).split(" ") : cmd.substr(11).split(" ")
 		const values={hours:0,minutes:0,days:0}
-
+		console.log(args)
 		for (let i = 0; i < args.length; i++) {
-			value=args[i]
+			var value=args[i]
 			if(value.endsWith("d")){
 				values.days = parseInt(value.slice(0,-1))
 			}
@@ -208,6 +208,7 @@ client.on("message", (message) => {
 
 		date=timestamp(values.minutes,values.hours,values.days)
 		tstamp=("<t:"+String(date)+">")
+		console.log(values.minutes,values.hours,values.days)
 		message.channel.send(cmd === "pls timestamp" | cmd === "pls tstamp"
 				? {
 						embeds: [

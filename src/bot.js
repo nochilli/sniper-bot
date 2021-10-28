@@ -8,6 +8,7 @@ const client = new Client({
 	partials: ["MESSAGE", "REACTION", "USER"],
 });
 const { token } = require("../config.json");
+const Embeds = require("../embeds.json");
 
 const snipes = {};
 const editSnipes = {};
@@ -22,7 +23,7 @@ const formatEmoji = (emoji) => {
 
 client.on("ready", () => {
 	console.log(`[sniper] :: Logged in as ${client.user.tag}.`);
-	client.user.setActivity('sniper help', { type: 'LISTENING' });
+	client.user.setActivity(`sniper help in ${client.guilds.cache.size}/100 servers`, { type: 'LISTENING' });
 });
 
 client.on("messageDelete", async (message) => {
@@ -39,25 +40,30 @@ client.on("messageDelete", async (message) => {
 	let messageAttachment = message.attachments.size > 0 ? Attachment[0][1].url : null
 	
 	if (messageAttachment){
-	if(message.content==null){
-		imageSnipes[message.channel.id] = {
-		author: message.author,
-		img: messageAttachment,
-		createdAt: message.createdTimestamp,
-		content: "ㅤ"
-	};}
-	else{
-		imageSnipes[message.channel.id] = {
+		if(message.content==null){
+			imageSnipes[message.channel.id] = {
 			author: message.author,
 			img: messageAttachment,
 			createdAt: message.createdTimestamp,
-			content: message.content,
+			content: "ㅤ"
+		};}
+		else{
+			imageSnipes[message.channel.id] = {
+				author: message.author,
+				img: messageAttachment,
+				createdAt: message.createdTimestamp,
+				content: message.content,
+			};
+		}
+	}
+	else{
+		imageSnipes[message.channel.id] = {
+			content: "?NOCONTENT?"
 		};
 	}
-  }
 });
 
-client.on("message", (message) => {
+client.on("messageCreate", (message) => {
 
 	if(message.author.bot) return;
 
@@ -79,7 +85,7 @@ client.on("message", (message) => {
 								"value": "<:replycont:895591087945711638>Displays the contents of most recently deleted image```pls imgsnipe / pls imagesnipe```",
 								},
 								{"name": "Reaction Snipe",
-								"value": "<:reply:894213507451617290>Displays the most recent removed reaction's emoji```pls rsnipe / pls reactsnipe```"
+								"value": "<:replycont:895591087945711638>Displays the most recent removed reaction's emoji```pls rsnipe / pls reactsnipe```"
 								},
 								{"name": "Timestamp",
 								"value": "<:reply:894213507451617290>Gives a timestamp for the inputted time```pls tstamp / pls timestamp```"
@@ -94,7 +100,8 @@ client.on("message", (message) => {
 	if(message.content.toLowerCase() === "pls snipe") {
 		const snipe = snipes[message.channel.id];
 		if(message.author.bot) return;
-		message.channel.send(snipe
+		message.channel.send(
+			snipe
 			? {
 					embeds: [
 						new MessageEmbed()
@@ -164,13 +171,21 @@ client.on("message", (message) => {
 				: "There's nothing to snipe!"
 		);
 	}
+	
 
 	if(message.content.toLowerCase() === "pls imgsnipe" || message.content.toLowerCase() === "pls imagesnipe") {
 		const snipe = imageSnipes[message.channel.id];
-		if(message.author.bot) return;
-		if(snipe=={}) 
-		var imgcontent = snipe.content == "ㅤ" ? "<:replycont:895591087945711638>Deleted an image <a:sussy:895613835149451274>" : "<:replycont:895591087945711638>Deleted an image <a:sussy:895613835149451274>\n\n<:reply:894213507451617290>"+snipe.content
-
+		var imgcontent
+		console.log(snipe)
+		if(snipe != undefined){
+			if(snipe.content=="")
+				{
+				imgcontent = "<:replycont:895591087945711638>Deleted an image <a:sussy:895613835149451274>"
+				}
+			else{
+				imgcontent = "<:replycont:895591087945711638>Deleted an image <a:sussy:895613835149451274>\n\n<:reply:894213507451617290>"+snipe.content
+			}
+}		
 		message.channel.send(snipe
 			? {
 					embeds: [
@@ -192,7 +207,7 @@ client.on("message", (message) => {
 		
 		var args = message.content.toLowerCase().startsWith("pls timestamp") ? cmd.substr(14).split(" ") : cmd.substr(11).split(" ")
 		const values={hours:0,minutes:0,days:0}
-		console.log(args)
+		
 		for (let i = 0; i < args.length; i++) {
 			var value=args[i]
 			if(value.endsWith("d")){
@@ -208,7 +223,6 @@ client.on("message", (message) => {
 
 		date=timestamp(values.minutes,values.hours,values.days)
 		tstamp=("<t:"+String(date)+">")
-		console.log(values.minutes,values.hours,values.days)
 		message.channel.send(cmd === "pls timestamp" | cmd === "pls tstamp"
 				? {
 						embeds: [
@@ -223,7 +237,18 @@ client.on("message", (message) => {
 		
 
  }
-
+ if(message.content.toLowerCase()==("pls invite") | message.content.toLowerCase()==("sniper invite")){
+	 console.log(Embeds.invite["invite"])
+	 message.channel.send({
+		embeds: [
+			new MessageEmbed()
+				.setDescription("<:replycont:895591087945711638>Click here to add me to your server:\n<:reply:894213507451617290>**[Invite me](https://discord.com/api/oauth2/authorize?client_id=893840496424792105&permissions=84992&scope=bot%20applications.commands)**")
+				.setAuthor(message.author.tag,message.author.avatarURL())
+				.setTimestamp(message.createdAt)
+				.setColor('#8aca85'),
+		],
+  })
+ }
 });  
 
 client.on("messageUpdate", async (oldMessage, newMessage) => {

@@ -8,7 +8,6 @@ const client = new Client({
 	partials: ["MESSAGE", "REACTION", "USER"],
 });
 const { token } = require("../config.json");
-const Embeds = require("../embeds.json");
 
 const snipes = {};
 const editSnipes = {};
@@ -21,7 +20,7 @@ const formatEmoji = (emoji) => {
 		: `[:${emoji.name}:](${emoji.url})`; // bot cannot use the emoji
 };
 
-client.on("ready", () => {
+client.on("ready", () => { 
 	console.log(`[sniper] :: Logged in as ${client.user.tag}.`);
 	client.user.setActivity(`sniper help in ${client.guilds.cache.size}/100 servers`, { type: 'LISTENING' });
 });
@@ -176,7 +175,6 @@ client.on("messageCreate", (message) => {
 	if(message.content.toLowerCase() === "pls imgsnipe" || message.content.toLowerCase() === "pls imagesnipe") {
 		const snipe = imageSnipes[message.channel.id];
 		var imgcontent
-		console.log(snipe)
 		if(snipe != undefined){
 			if(snipe.content=="")
 				{
@@ -186,7 +184,7 @@ client.on("messageCreate", (message) => {
 				imgcontent = "<:replycont:895591087945711638>Deleted an image <a:sussy:895613835149451274>\n\n<:reply:894213507451617290>"+snipe.content
 			}
 }		
-		message.channel.send(snipe
+		message.channel.send(snipe.content != "?NOCONTENT?"
 			? {
 					embeds: [
 						new MessageEmbed()
@@ -207,9 +205,10 @@ client.on("messageCreate", (message) => {
 		
 		var args = message.content.toLowerCase().startsWith("pls timestamp") ? cmd.substr(14).split(" ") : cmd.substr(11).split(" ")
 		const values={hours:0,minutes:0,days:0}
-		
+
 		for (let i = 0; i < args.length; i++) {
 			var value=args[i]
+			
 			if(value.endsWith("d")){
 				values.days = parseInt(value.slice(0,-1))
 			}
@@ -238,7 +237,6 @@ client.on("messageCreate", (message) => {
 
  }
  if(message.content.toLowerCase()==("pls invite") | message.content.toLowerCase()==("sniper invite")){
-	 console.log(Embeds.invite["invite"])
 	 message.channel.send({
 		embeds: [
 			new MessageEmbed()
@@ -285,7 +283,7 @@ function timestamp(minutes,hours,days){
 	var second = d.getUTCSeconds()
 	var datum = new Date(Date.UTC(year, month, day + days, hour + hours, minute + minutes, second))
 	return datum.getTime()/1000
-	}
+}
 
 
 client.login(token);

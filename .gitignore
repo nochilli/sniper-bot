@@ -108,4 +108,4 @@ dist
 
 # other
 .DS_Store
-config.json
+config.mjs

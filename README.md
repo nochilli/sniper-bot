@@ -2,20 +2,20 @@
 
 # Sniper
 
-> An easy to run simple bot that lets you snipe messages in your Discord server.
+> An easy to run simple bot that lets you snipe messages, images, reactions and more in your Discord server.
 
 ## Setup
 
 Node.js 16.6.0 or newer is required.
 
-1. Run:
+1. Clone or download the Source Code:
 
 ```bash
 $ git clone https://github.com/nochilli/sniper-bot.git
 $ cd ./sniper-bot
 ```
 
-2. Create config.json:
+2. Create config.json in ./sniper-bot:
 
 ```json
 {
@@ -24,7 +24,7 @@ $ cd ./sniper-bot
 }
 ```
 
-3. Run:
+3. Run the bot:
 
 ```bash
 $ npm run bot
